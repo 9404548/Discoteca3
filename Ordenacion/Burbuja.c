@@ -18,20 +18,17 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
     struct timeval inicio, fin;
     int i,j;
     int n = Estadisticas.NumeroFichas;
-    char* nombre = (char*)malloc(sizeof(char)*100);
-    char* apellido = (char*)malloc(sizeof(char)*100);
-    char nombreCompleto1[100] = "";
-    char nombreCompleto2[100] = "";
     DISCO *pAux;
     //Añade aquí la definición del resto de variables necesarias
     
     gettimeofday(&inicio,NULL);
     Orden=InitOrden(Ficha);
-    pAux = Orden[0];
+    char Autor1[256], Autor2[256];
+
     //Código del Alumno del método de ordenación de la Burbuja
     if(Campo == ORDEN_POR_TITULO){
-        for(i = 1; i <= n - i; i++){
-            for(j = 0; j < n - i; j++ ){
+        for(i = 0; i < n - 1; i++){
+            for(j = 0; j < n - i - 1; j++ ){
                 if(strcmp(Orden[j]->Obra, Orden[j + 1]->Obra) > 0){
                     pAux = Orden[j];
                     Orden[j] = Orden[j + 1];
@@ -40,18 +37,20 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
             }
         }
     } else if(Campo == ORDEN_POR_AUTOR){
-        for(i = 1; i <= n - i; i++){
-            for(j = 0; j < n - i; j++ ){
-
-                *nombre = *(Orden[j]->ApellAutor);
-                *apellido = *(Orden[j]->NomAutor);
-                strcat(strcat(strcat(nombreCompleto1, nombre), ", "), apellido);
-
-                *nombre = *(Orden[j+1]->ApellAutor);
-                *apellido = *(Orden[j+1]->NomAutor);
-                strcat(strcat(strcat(nombreCompleto2, nombre), ", "), apellido);
-
-                if(strcmp(nombreCompleto1, nombreCompleto2) > 0){
+        
+        for(i = 0; i < n - 1; i++){
+            for(j = 0; j < n - i - 1; j++ ){
+                strcpy(Autor1,Orden[j]->ApellAutor);
+                if (Orden[j]->NomAutor != NULL) {
+                    strcat(Autor1,", ");
+                    strcat(Autor1,Orden[j]->NomAutor);
+                }
+                strcpy(Autor2,Orden[j+1]->ApellAutor);
+                if (Orden[j+1]->NomAutor != NULL) {
+                    strcat(Autor2,", ");
+                    strcat(Autor2,Orden[j+1]->NomAutor);
+                }
+                if(strcmp(Autor1, Autor2) > 0){
                     pAux = Orden[j];
                     Orden[j] = Orden[j + 1];
                     Orden[j + 1] = pAux;
@@ -59,9 +58,7 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
             }
         }        
     }
-    free(nombre);
-    free(apellido);
-    gettimeofday(&fin,NULL);
+    gettimeofday(&fin, NULL);
     Estadisticas.TiempoBurbuja=DifTiempo(inicio,fin);
 
     return(Orden);

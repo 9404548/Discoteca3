@@ -12,6 +12,13 @@
 
 #include "Busqueda.h"
 
+char lowercase(char c){
+    if(c >= 'A' && c <= 'Z'){
+        c += 32;
+    }
+    return c;
+}
+
 void BusquedaBinaria(DISCO *Fichas)
 {
     char *Autor;
@@ -31,6 +38,65 @@ void BusquedaBinaria(DISCO *Fichas)
     Orden=Quicksort(Fichas, ORDEN_POR_AUTOR);
 
     //Código del alumno del Algoritmo de Búsqueda Binaria
+    int indiceBusqueda = Estadisticas.NumeroFichas / 2;
+    int comparacion = 0;
+    char Apellido[256];
+    int i, j, maxIteraciones, limiteInferior, limiteSuperior;
+    DISCO *pAux;
+
+    maxIteraciones = 0;
+    i = 1;
+    do{
+        maxIteraciones++;
+        i *=2;
+    }while(i < Estadisticas.NumeroFichas);
+    maxIteraciones++;
+
+    for(i = 0; i < maxIteraciones; i++){ // Este bucle encuentra una instancia del apellido buscado
+        strcpy(Apellido, Orden[indiceBusqueda]->ApellAutor);
+        for(j = 0; Apellido[j]; i++){
+            Apellido[j] = lowercase(Apellido[j]);
+        }
+
+        if((comparacion = strcmp(Autor, Apellido)) == 0){
+            Encontrado = true;
+            Hallados++;
+            break;
+        }
+        else if(comparacion < 0) indiceBusqueda /= 2;
+        else indiceBusqueda += indiceBusqueda / 2;
+    }
+    
+    if(Encontrado){
+        for(i = indiceBusqueda - 1; i > -1; i--){
+            strcpy(Apellido, Orden[i]->ApellAutor);
+            for(j = 0; Apellido[j]; j++){
+                Apellido[j] = lowercase(Apellido[j]);
+            }
+            if(strcmp(Autor, Apellido) == 0){
+                Hallados++;
+                continue;
+            }
+            limiteInferior = i + 1;
+        }
+
+        for(i = indiceBusqueda + 1; i < Estadisticas.NumeroFichas; i++){
+            strcpy(Apellido, Orden[i]->ApellAutor);
+            for(j = 0; Apellido[j]; j++){
+                Apellido[j] = lowercase(Apellido[j]);
+            }
+            if(strcmp(Autor, Apellido) == 0){
+                Hallados++;
+                continue;
+            }
+            limiteSuperior = i - 1;
+        }
+
+        for(i = 0; i < Hallados; i++){
+            Resultado[i] = Orden[limiteInferior + i];
+        }
+    }
+    
 
     free(Orden);
     
