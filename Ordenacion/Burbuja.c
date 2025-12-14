@@ -50,6 +50,8 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
                     strcat(Autor2,", ");
                     strcat(Autor2,Orden[j+1]->NomAutor);
                 }
+                // Se realiza un intercambio siempre que la ficha izquierda sea mayor que la ficha derecha
+                // de manera que la ficha mayor siempre quede a la derecha del todo en cada iteración
                 if(strcmp(Autor1, Autor2) > 0){
                     pAux = Orden[j];
                     Orden[j] = Orden[j + 1];

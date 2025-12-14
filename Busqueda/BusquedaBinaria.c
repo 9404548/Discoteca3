@@ -12,16 +12,24 @@
 
 #include "Busqueda.h"
 
-char lowercase(char c){
-    if(c >= 'A' && c <= 'Z'){
-        c += 32;
+void strToLowercase(char *destino, char *origen){
+    int i = 0;
+
+    while(origen[i]){
+        if(origen[i] >= 'A' && origen[i] <= 'Z') destino[i] = origen[i] + 32;
+        else destino[i] = origen[i];
+        i++;
     }
-    return c;
+    
+    destino[i] = '\0';
+
+    return;
 }
 
 void BusquedaBinaria(DISCO *Fichas)
 {
-    char *Autor;
+    char AutorBuscado[256];
+    char *AutorOriginal;
     DISCO **Resultado=NULL;
     DISCO **Orden=NULL;
     int Hallados=0;
@@ -30,7 +38,7 @@ void BusquedaBinaria(DISCO *Fichas)
 
     // Añadir aquí la definición del resto de variables usadas
 
-    if ((Autor=LeerAutor()) == NULL)
+    if ((AutorOriginal=LeerAutor()) == NULL)
         return;
 
     gettimeofday(&inicio,NULL);
@@ -38,62 +46,54 @@ void BusquedaBinaria(DISCO *Fichas)
     Orden=Quicksort(Fichas, ORDEN_POR_AUTOR);
 
     //Código del alumno del Algoritmo de Búsqueda Binaria
-    int indiceBusqueda = Estadisticas.NumeroFichas / 2;
     int comparacion = 0;
-    char Apellido[256];
-    int i, j, maxIteraciones, limiteInferior, limiteSuperior;
+    char ApellidoTemporal[256];
+    int i, j, paredIzq, paredDer, centro, indiceEncontrado;
     DISCO *pAux;
 
-    maxIteraciones = 0;
-    i = 1;
-    do{
-        maxIteraciones++;
-        i *=2;
-    }while(i < Estadisticas.NumeroFichas);
-    maxIteraciones++;
+    paredIzq = 0;
+    paredDer = Estadisticas.NumeroFichas - 1;
+    
+    strToLowercase(AutorBuscado, AutorOriginal);
 
-    for(i = 0; i < maxIteraciones; i++){ // Este bucle encuentra una instancia del apellido buscado
-        strcpy(Apellido, Orden[indiceBusqueda]->ApellAutor);
-        for(j = 0; Apellido[j]; i++){
-            Apellido[j] = lowercase(Apellido[j]);
-        }
+    while(paredIzq <= paredDer){
+        centro = paredIzq + (paredDer - paredIzq) / 2;
 
-        if((comparacion = strcmp(Autor, Apellido)) == 0){
-            Encontrado = true;
-            Hallados++;
+        strToLowercase(ApellidoTemporal, Orden[centro]->ApellAutor);
+
+        if((comparacion = strcmp(ApellidoTemporal, AutorBuscado))== 0){
+            indiceEncontrado = centro;
+            Encontrado = true; 
             break;
-        }
-        else if(comparacion < 0) indiceBusqueda /= 2;
-        else indiceBusqueda += indiceBusqueda / 2;
+        } 
+        else if (comparacion < 0) // El autor observado actualmente es menor al autor a encontrar
+            paredIzq = centro + 1;
+        else
+            paredDer = centro - 1;
     }
     
     if(Encontrado){
-        for(i = indiceBusqueda - 1; i > -1; i--){
-            strcpy(Apellido, Orden[i]->ApellAutor);
-            for(j = 0; Apellido[j]; j++){
-                Apellido[j] = lowercase(Apellido[j]);
-            }
-            if(strcmp(Autor, Apellido) == 0){
-                Hallados++;
-                continue;
-            }
-            limiteInferior = i + 1;
+        paredIzq = indiceEncontrado;
+        paredDer = indiceEncontrado;
+
+        while (paredIzq > 0) {
+            strToLowercase(ApellidoTemporal, Orden[paredIzq - 1]->ApellAutor);
+            if (strcmp(AutorBuscado, ApellidoTemporal) != 0) break;
+            paredIzq--;
         }
 
-        for(i = indiceBusqueda + 1; i < Estadisticas.NumeroFichas; i++){
-            strcpy(Apellido, Orden[i]->ApellAutor);
-            for(j = 0; Apellido[j]; j++){
-                Apellido[j] = lowercase(Apellido[j]);
-            }
-            if(strcmp(Autor, Apellido) == 0){
-                Hallados++;
-                continue;
-            }
-            limiteSuperior = i - 1;
+        while (paredDer < Estadisticas.NumeroFichas - 1) {
+            strToLowercase(ApellidoTemporal, Orden[paredDer + 1]->ApellAutor);
+            if (strcmp(AutorBuscado, ApellidoTemporal) != 0) break;
+            paredDer++;
         }
+
+        Hallados = paredDer - paredIzq + 1;
+
+        Resultado = (DISCO**)malloc(sizeof(DISCO*)*Hallados);
 
         for(i = 0; i < Hallados; i++){
-            Resultado[i] = Orden[limiteInferior + i];
+            Resultado[i] = Orden[paredIzq + i];
         }
     }
     
