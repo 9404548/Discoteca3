@@ -74,5 +74,6 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
     gettimeofday(&fin, NULL);
     Estadisticas.TiempoSeleccion = DifTiempo(inicio, fin);
 
+    // Devuelve el array ordenado
     return (Orden);
 }
