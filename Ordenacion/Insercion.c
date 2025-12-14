@@ -23,6 +23,7 @@ DISCO **Insercion(DISCO *Ficha, int Campo)
     gettimeofday(&inicio, NULL);
     Orden = InitOrden(Ficha);
 
+    // Bucle que recorre desde la segunda posición hasta el final del array
     for (i = 1; i < Estadisticas.NumeroFichas; i++)
     {
         // Guardamos la ficha en una variable auxiliar para comparar
@@ -62,11 +63,15 @@ DISCO **Insercion(DISCO *Ficha, int Campo)
              * Si Autor1 es lexicográficamente mayor que Autor2 -> comparador > 0  *
              **********************************************************************/
 
+            // Si el Autor en la posición j es menor o igual que aux, salimos del bucle
             if (comparador <= 0)
                 break;
+            // Si es mayor, desplazamos el elemento a la derecha
             Orden[j + 1] = Orden[j];
+            // Decrementamos j para hacer el hueco en la posición correcta
             j--;
         }
+        // Colocamos el elemento aux en su posición correcta
         Orden[j + 1] = aux;
     }
 
@@ -74,5 +79,6 @@ DISCO **Insercion(DISCO *Ficha, int Campo)
     gettimeofday(&fin, NULL);
     Estadisticas.TiempoInsercion = DifTiempo(inicio, fin);
 
+    // Devuelve el array ordenado
     return (Orden);
 }

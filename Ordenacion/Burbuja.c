@@ -19,16 +19,20 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
     int i,j;
     int n = Estadisticas.NumeroFichas;
     DISCO *pAux;
-    //Añade aquí la definición del resto de variables necesarias
     
     gettimeofday(&inicio,NULL);
+    // Se inicializa el array de fichas
     Orden=InitOrden(Ficha);
+    // Variables para la comparación de autores
     char Autor1[256], Autor2[256];
 
-    //Código del Alumno del método de ordenación de la Burbuja
+    // Si queremos ordenar las fichas por título
     if(Campo == ORDEN_POR_TITULO){
+        // Bucle de la burbuja que recorre todo el array
         for(i = 0; i < n - 1; i++){
+            // Bucle que realiza las comparaciones entre las fichas vecinas
             for(j = 0; j < n - i - 1; j++ ){
+                // Si la ficha izquierda es mayor que la derecha, se intercambian
                 if(strcmp(Orden[j]->Obra, Orden[j + 1]->Obra) > 0){
                     pAux = Orden[j];
                     Orden[j] = Orden[j + 1];
@@ -36,15 +40,21 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
                 }
             }
         }
+    // si queremos ordenar las fichas por autor
     } else if(Campo == ORDEN_POR_AUTOR){
         
+        // Bucle de la burbuja que recorre todo el array
         for(i = 0; i < n - 1; i++){
+            // Bucle que realiza las comparaciones entre las fichas vecinas
             for(j = 0; j < n - i - 1; j++ ){
+                // Aquí se construyen los nombres completos de los autores, copia el apellido del autor en Autor1
                 strcpy(Autor1,Orden[j]->ApellAutor);
                 if (Orden[j]->NomAutor != NULL) {
+                    // Si el nombre del autor no es NULL, se concatena con una coma primero el apellido y luego el nombre
                     strcat(Autor1,", ");
                     strcat(Autor1,Orden[j]->NomAutor);
                 }
+                // Aquí lo mismo para la ficha vecina, se copia en Autor2
                 strcpy(Autor2,Orden[j+1]->ApellAutor);
                 if (Orden[j+1]->NomAutor != NULL) {
                     strcat(Autor2,", ");
@@ -61,7 +71,9 @@ DISCO **Burbuja(DISCO *Ficha,int Campo)
         }        
     }
     gettimeofday(&fin, NULL);
+    // Se actualiza el tiempo de ordenación en las estadísticas
     Estadisticas.TiempoBurbuja=DifTiempo(inicio,fin);
 
+    // Devuelve el array ordenado
     return(Orden);
 }
