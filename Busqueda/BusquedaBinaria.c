@@ -35,6 +35,10 @@ void BusquedaBinaria(DISCO *Fichas)
     int Hallados=0;
     struct timeval inicio, fin;
     bool Encontrado;
+    int comparacion = 0;
+    char ApellidoTemporal[256];
+    int i, j, paredIzq, paredDer, centro, indiceEncontrado;
+    DISCO *pAux;
 
     // Añadir aquí la definición del resto de variables usadas
 
@@ -46,10 +50,6 @@ void BusquedaBinaria(DISCO *Fichas)
     Orden=Quicksort(Fichas, ORDEN_POR_AUTOR);
 
     //Código del alumno del Algoritmo de Búsqueda Binaria
-    int comparacion = 0;
-    char ApellidoTemporal[256];
-    int i, j, paredIzq, paredDer, centro, indiceEncontrado;
-    DISCO *pAux;
 
     paredIzq = 0;
     paredDer = Estadisticas.NumeroFichas - 1;
